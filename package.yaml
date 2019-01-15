@@ -17,3 +17,4 @@ dependencies:
 
 library:
   source-dirs:      src
+  ghc-options: -W -Wall
