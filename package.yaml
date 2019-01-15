@@ -1,0 +1,19 @@
+name:                acme-circular-containers
+version:             0.1.0.0
+#synopsis:
+#description:
+homepage:            https://github.com/gelisam/acme-circular-containers#readme
+license:             PublicDomain
+author:              Samuel Gélineau
+maintainer:          gelisam+github@gmail.com
+category:            Acme
+extra-source-files:
+- README.md
+
+dependencies:
+  - base >= 4.7 && < 5
+
+executables:
+  acme-circular-containers:
+    source-dirs:      src
+    main:             Main.hs
