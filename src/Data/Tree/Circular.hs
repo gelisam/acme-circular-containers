@@ -23,4 +23,4 @@ freeze = go Nothing
         children = go (Just tree) <$> ts
 
 thaw :: Tree a -> Containers.Tree a
-thaw = error "not implemented yet"
+thaw (Node _ a ts) = Containers.Node a (fmap thaw ts)
