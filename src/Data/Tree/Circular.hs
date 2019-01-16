@@ -1,4 +1,4 @@
-{-# LANGUAGE RecordWildCards, ScopedTypeVariables #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Data.Tree.Circular where
 
 import Data.Tree (Tree(Node))
