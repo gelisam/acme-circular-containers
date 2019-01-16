@@ -8,6 +8,8 @@ Most immutable data structures have a spine, meaning that when you modify an ele
 
 The Acme category is for joke packages, so as you might guess from that and from the paragraph above, spineless immutable data structures are rarely a good idea. Nevertheless, some serious packages do provide important spineless immutable data structures, such as [Arrays](http://hackage.haskell.org/package/array), for those few situations in which the read operations sufficiently outnumber the write operations that the improvement of reads from O(log n) to O(1) compensates for the deterioration of writes from O(log n) to O(n).
 
+When I started to write this package, I initially though that the data structures I was implementing might offer the same kind of benefits in similarly-rare circumstances. However, it turns out that for each of them, there is already an existing standard data structure which has the same performance on the operations I support, and often also support fast updates. So this package really does deserve its Acme label, and should serve as a cautionary tale: yes, it is possible to implement immutable spineless data structures, but you probably shouldn't!
+
 ## Circular
 
 Unlike Arrays, which are spineless because all the data is in a single node, the data structures in this package consist of several nodes. The nodes point at each other, giving you O(1) access to their neighbours, and those pointers are allowed to form cycles. This differs from spine-based data structures, in which parent nodes point to their child nodes but not vice-versa.
@@ -22,7 +24,11 @@ A circular version of [`Data.Graph`](http://hackage.haskell.org/package/containe
 
 Many beginners struggle to implement graphs in Haskell, because the obvious representation is to have each vertex point at their neighbours, but that representation is spineless, unlike every other data structure they are likely to have defined up to this point. The normal solution is to store the set of vertices and the set of edges separately, each in their own spine-based data structure, something like `Graph { vertices :: Set Int, edges :: Set (Int, Int) }`. Here, however, we do create one node per vertex, and each node does point to its vertex's neighbours.
 
-Note that since `Data.Graph` and `Data.Graph.Wrapper` are already using arrays, this representation does not really offer a different tradeoff with respect to read and write operations, it's just a proof of concept demonstrating that we can represent graphs in this way if we really want to.
+#### Non-acme alternative
+
+`Data.Graph` uses `0` to `n-1` to represent the `n` vertices of a graph, and an array of `n` lists of vertices to represent the neighbours of each vertex. As a result, it also has O(1) access to the list of neighbours of a vertex. My version associates a label of type `v` to each vertex, which `Data.Graph` doesn't support, but it's easy to define another array of `n` labels in order to get O(1) access to the label as well.
+
+`Data.Graph.Wrapper` also associates a label of type `v` to each vertex, and does use an array of `n` labels to store them, but instead of using the indices from `0` to `n-1` to represent the vertices, it lets you use `n` distinct, not necessarily consecutive values of type `i`. As a result, `Data.Graph.Wrapper` requires an extra O(log n) step to convert an `i` into an array index.
 
 ### Sequence
 
@@ -30,8 +36,18 @@ A circular version of [`Data.Sequence`](http://hackage.haskell.org/package/conta
 
 The imperative version of `Seq` would be a doubly-linked list: we can efficiently add and remove elements to both ends of the sequence, and we can efficiently concatenate two sequences, but we don't have easy access to the elements in the middle of the sequence, we have to walk to them one step at a time. Our circular version is literally a doubly-linked list; starting from either end, we can walk in either direction one step at a time, but of course we cannot efficiently make any modification. Unlike `Seq`, walking towards the middle elements doesn't peel off the outer elements, so from one of the inner nodes, we can efficiently access the nodes to its left and right.
 
+#### Non-acme alternative
+
+The spine-based way to navigate in all directions within a data structure is a [zipper](https://en.wikipedia.org/wiki/Zipper_(data_structure)). It's a way to reorganize the data structure so that the spine from the root to the current position has length one, thereby making both reading and updating the current position O(1) operations. Moving the current position to an adjacent location is also O(1).
+
+[`Data.List.Zipper`](http://hackage.haskell.org/package/ListZipper-1.2.0.2/docs/Data-List-Zipper.html) implements a list zipper.
+
 ### Tree
 
 A circular version of [`Data.Tree`](http://hackage.haskell.org/package/containers-0.6.0.1/docs/Data-Tree.html).
 
 In the circular version, the parent node is not peeled off when we walk into a child node, so from one of the inner nodes, we can efficiently access its child nodes (as usual) but also its parent node.
+
+#### Non-acme alternative
+
+[`Data.Tree.Zipper`](http://hackage.haskell.org/package/rosezipper-0.2/docs/Data-Tree-Zipper.html) implements a tree zipper.
