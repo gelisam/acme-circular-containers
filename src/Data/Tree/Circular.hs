@@ -1,47 +1,47 @@
 {-# LANGUAGE RecordWildCards, ScopedTypeVariables #-}
 module Data.Tree.Circular where
 
-import qualified Data.Tree as Containers
+import Data.Tree (Tree(Node))
 
 -- $setup
 -- >>> import Data.List (nub)
 -- >>> import System.Mem.StableName (makeStableName)
--- >>> t0 = Containers.Node "1" [Containers.Node "1.1" [Containers.Node "1.1.1" [], Containers.Node "1.1.2" []], Containers.Node "1.2" []]
+-- >>> t0 = Node "1" [Node "1.1" [Node "1.1.1" [], Node "1.1.2" []], Node "1.2" []]
 
-data Tree a = Node
-  { treeParent   :: Maybe (Tree a)
-  , treeLabel    :: a
-  , treeChildren :: [Tree a]
+data TreeNode a = TreeNode
+  { treeNodeParent   :: Maybe (TreeNode a)
+  , treeNodeLabel    :: a
+  , treeNodeChildren :: [TreeNode a]
   }
 
 -- |
 -- >>> t1 = freeze t0
--- >>> [t11,  t12 ] = treeChildren t1
--- >>> [t111, t112] = treeChildren t11
--- >>> Just t1'   = treeParent t11
--- >>> Just t1''  = treeParent t12
--- >>> Just t11'  = treeParent t111
--- >>> Just t11'' = treeParent t112
+-- >>> [t11,  t12 ] = treeNodeChildren t1
+-- >>> [t111, t112] = treeNodeChildren t11
+-- >>> Just t1'   = treeNodeParent t11
+-- >>> Just t1''  = treeNodeParent t12
+-- >>> Just t11'  = treeNodeParent t111
+-- >>> Just t11'' = treeNodeParent t112
 -- >>> foldr seq () [t1, t1', t1'', t11, t11', t11'']
 -- ()
 -- >>> length . nub <$> mapM makeStableName [t1,t1',t1'']
 -- 1
 -- >>> length . nub <$> mapM makeStableName [t11,t11',t11'']
 -- 1
-freeze :: forall a. Containers.Tree a -> Tree a
+freeze :: forall a. Tree a -> TreeNode a
 freeze = go Nothing
   where
-    go :: Maybe (Tree a) -> Containers.Tree a -> Tree a
-    go parent (Containers.Node a ts) = tree
+    go :: Maybe (TreeNode a) -> Tree a -> TreeNode a
+    go parent (Node a ts) = treeNode
       where
-        tree :: Tree a
-        tree = Node parent a children
+        treeNode :: TreeNode a
+        treeNode = TreeNode parent a children
 
-        children :: [Tree a]
-        children = go (Just tree) <$> ts
+        children :: [TreeNode a]
+        children = go (Just treeNode) <$> ts
 
 -- |
 -- >>> thaw (freeze t0) == t0
 -- True
-thaw :: Tree a -> Containers.Tree a
-thaw (Node _ a ts) = Containers.Node a (fmap thaw ts)
+thaw :: TreeNode a -> Tree a
+thaw (TreeNode _ a ts) = Node a (fmap thaw ts)
