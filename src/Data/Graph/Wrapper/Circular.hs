@@ -36,16 +36,8 @@ eqGraphWrapper :: (Ord i, Eq v)
                => Wrapper.Graph i v -> Wrapper.Graph i v -> Bool
 eqGraphWrapper = (==) `on` toSortedList
 
--- "Data.Graph.Wrapper" doesn't have an 'Ord' instance for some reason
-compareGraphWrapper :: (Ord i, Ord v)
-                    => Wrapper.Graph i v -> Wrapper.Graph i v -> Ordering
-compareGraphWrapper = compare `on` toSortedList
-
 instance (Ord i, Eq v) => Eq (Graph i v) where
   (==) = eqGraphWrapper `on` thaw
-
-instance (Ord i, Ord v) => Ord (Graph i v) where
-  compare = compareGraphWrapper `on` thaw
 
 
 -- |
