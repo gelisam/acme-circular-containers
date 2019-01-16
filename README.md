@@ -18,7 +18,7 @@ The data structures provided by this package are circular versions of some of th
 
 ### Graph
 
-A circular version of [`Data.Graph`](http://hackage.haskell.org/package/containers/docs/Data-Graph.html); or rather of [`Data.Graph.Wrapper`](http://hackage.haskell.org/package/graph-wrapper/docs/Data-Graph-Wrapper.html), a wrapper which associates data to the edges and vertices.
+A circular version of [`Data.Graph`](http://hackage.haskell.org/package/containers/docs/Data-Graph.html); or rather of [`Data.Graph.Wrapper`](http://hackage.haskell.org/package/graph-wrapper/docs/Data-Graph-Wrapper.html), a wrapper which associates data to the vertices.
 
 Many beginners struggle to implement graphs in Haskell, because the obvious representation is to have each vertex point at their neighbours, but that representation is spineless, unlike every other data structure they are likely to have defined up to this point. The normal solution is to store the set of vertices and the set of edges separately, each in their own spine-based data structure, something like `Graph { vertices :: Set Int, edges :: Set (Int, Int) }`. Here, however, we do create one node per vertex, and each node does point to its vertex's neighbours.
 
