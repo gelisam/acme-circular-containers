@@ -1,7 +1,5 @@
 # acme-circular-containers
 
-(work in progress: this Readme documents the aspirations of this package, not its current status)
-
 Most immutable data structures have a spine, meaning that when you modify an element, only the nodes on the path from the root to the modified element need to be reallocated. The data structures in this library are spineless, so all the nodes need to be reallocated.
 
 ## Acme
