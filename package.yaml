@@ -3,6 +3,7 @@ version:             0.1.0.0
 synopsis:            Spineless containers which are fast to read but inefficient to update
 description:         Doubly-linked lists, doubly-linked trees, and naïvely-represented graphs, with each vertex literally pointing at its neighbours.
 homepage:            https://github.com/gelisam/acme-circular-containers#readme
+github:              gelisam/acme-circular-containers
 license:             PublicDomain
 author:              Samuel Gélineau
 maintainer:          gelisam+github@gmail.com
