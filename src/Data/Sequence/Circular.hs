@@ -1,5 +1,5 @@
 {-# LANGUAGE LambdaCase, ScopedTypeVariables #-}
-module Data.Sequence.Circular where
+module Data.Sequence.Circular(Seq, NonEmptySeq(..), SeqNode(..), freeze, thaw) where
 
 import qualified Data.Sequence as Containers
 
@@ -8,8 +8,16 @@ import qualified Data.Sequence as Containers
 -- >>> import System.Mem.StableName (makeStableName)
 -- >>> s = Containers.fromList "abcd"
 
+-- | A variant of 'Containers.Seq' in which we can walk from the outside in, as
+-- usual, but also from the inside out.
 type Seq a = Maybe (NonEmptySeq a)
 
+-- | A doubly-linked list.
+--
+-- Sequences are not typically represented this way because the cycles between
+-- each node and its neighbours mean that any change to the sequence requires
+-- reallocating all of its node, not just the path from the closest end to the
+-- modified element. For this reason, we do not offer any update operations.
 data NonEmptySeq a = NonEmptySeq
   { seqFirst :: SeqNode a
   , seqLast  :: SeqNode a
@@ -37,6 +45,12 @@ data SeqNode a = SeqNode
 -- 1
 -- >>> length . nub <$> mapM makeStableName [s4,s4']
 -- 1
+
+-- |
+-- > freeze :: Data.Sequence.Seq a
+-- >        -> Data.Sequence.Circular.Seq a
+--
+-- O(n)
 freeze :: forall a. Containers.Seq a -> Seq a
 freeze = freezeSeq Nothing
   where
@@ -44,6 +58,7 @@ freeze = freezeSeq Nothing
     freezeSeq prev = \case
       Containers.Empty    -> Nothing
       a Containers.:<| as -> Just $ freezeNonEmptySeq prev a as
+
     freezeNonEmptySeq :: Maybe (SeqNode a) -> a -> Containers.Seq a -> NonEmptySeq a
     freezeNonEmptySeq prev a as = NonEmptySeq first last_
       where
@@ -62,6 +77,13 @@ freeze = freezeSeq Nothing
 -- $
 -- >>> thaw (freeze s) == s
 -- True
+
+-- | Returns the elements at and to the right of the given 'SeqNode'.
+--
+-- > thaw :: Data.Sequence.Circular.Seq a
+-- >      -> Data.Sequence.Seq a
+--
+-- O(n)
 thaw :: forall a. Seq a -> Containers.Seq a
 thaw = go . fmap seqFirst
   where
