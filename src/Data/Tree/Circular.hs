@@ -14,7 +14,7 @@ data TreeNode a = TreeNode
   , treeNodeChildren :: [TreeNode a]
   }
 
--- |
+-- $
 -- >>> t1 = freeze t0
 -- >>> [t11,  t12 ] = treeNodeChildren t1
 -- >>> [t111, t112] = treeNodeChildren t11
@@ -40,7 +40,7 @@ freeze = go Nothing
         children :: [TreeNode a]
         children = go (Just treeNode) <$> ts
 
--- |
+-- $
 -- >>> thaw (freeze t0) == t0
 -- True
 thaw :: TreeNode a -> Tree a

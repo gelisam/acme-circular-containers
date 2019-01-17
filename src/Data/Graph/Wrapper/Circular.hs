@@ -40,7 +40,7 @@ instance (Ord i, Eq v) => Eq (Graph i v) where
   (==) = eqGraphWrapper `on` thaw
 
 
--- |
+-- $
 -- >>> [('1',v1), ('2',v2), ('3',v3)] = Map.toList . graphVertices $ g'
 -- >>> [('2',v2')] = Map.toList . vertexNeighbours $ v1
 -- >>> [('3',v3')] = Map.toList . vertexNeighbours $ v2
@@ -69,7 +69,7 @@ freeze g = Graph vertices
     lookupVertex :: i -> (i, Vertex i v)
     lookupVertex i = (i, vertices ! i)
 
--- |
+-- $
 -- >>> thaw (freeze g) `eqGraphWrapper` g
 -- True
 -- >>> freeze (thaw g') == g'

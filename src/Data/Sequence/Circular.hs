@@ -21,7 +21,7 @@ data SeqNode a = SeqNode
   , seqNodeNext  :: Maybe (SeqNode a)
   }
 
--- |
+-- $
 -- >>> Just (NonEmptySeq s1 s4') = freeze s
 -- >>> SeqNode Nothing 'a' (Just s2) = s1
 -- >>> SeqNode (Just s1') 'b' (Just s3) = s2
@@ -59,7 +59,7 @@ freeze = freezeSeq Nothing
         last_ :: SeqNode a
         last_ = maybe first seqLast seq_
 
--- |
+-- $
 -- >>> thaw (freeze s) == s
 -- True
 thaw :: forall a. Seq a -> Containers.Seq a
