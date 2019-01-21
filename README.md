@@ -129,15 +129,15 @@ data Node a
            }
 
 a, b, c, d, e, f, g, h, i :: Node String
-a = Node Leaf "a" b e
-b = Node a    "b" c d
-c = Node b    "c" Leaf Leaf
-d = Node b    "d" Leaf Leaf
-e = Node a    "e" f i
-f = Node e    "f" g h
-g = Node f    "g" Leaf Leaf
-h = Node f    "h" Leaf Leaf
-i = Node e    "i" Leaf Leaf
+a = Branch Leaf "a" b e
+b = Branch a    "b" c d
+c = Branch b    "c" Leaf Leaf
+d = Branch b    "d" Leaf Leaf
+e = Branch a    "e" f i
+f = Branch e    "f" g h
+g = Branch f    "g" Leaf Leaf
+h = Branch f    "h" Leaf Leaf
+i = Branch e    "i" Leaf Leaf
 ```
 
 This time, each `Node` not only points to its two child nodes, but also to its parent node. I say that this is "circular" because I can follow the pointers from `a` to `b` and then back to `a`, in a circle. As we will see, these cycles make a big difference.
@@ -146,15 +146,15 @@ Let's try to change the `"f"` label again.
 
 ```haskell
 a', b', c', d', e', f', g', h', i' :: Node String
-a' = Node Leaf "a" b' e'
-b' = Node a'   "b" c' d'
-c' = Node b'   "c" Leaf Leaf
-d' = Node b'   "d" Leaf Leaf
-e' = Node a'   "e" f' i'
-f' = Node e'   "F" g' h'  -- was previously "f"
-g' = Node f'   "g" Leaf Leaf
-h' = Node f'   "h" Leaf Leaf
-i' = Node e'   "i" Leaf Leaf
+a' = Branch Leaf "a" b' e'
+b' = Branch a'   "b" c' d'
+c' = Branch b'   "c" Leaf Leaf
+d' = Branch b'   "d" Leaf Leaf
+e' = Branch a'   "e" f' i'
+f' = Branch e'   "F" g' h'  -- was previously "f"
+g' = Branch f'   "g" Leaf Leaf
+h' = Branch f'   "h" Leaf Leaf
+i' = Branch e'   "i" Leaf Leaf
 ```
 
 I have to define `f'`, because I want it to have a different label than `f`. So I have to define `e'`, because I want it to point to a different child node, `f'` instead of `f`, and similarly up to the root of the tree. I also have to define `g'` and `h'`, because I want them to point to their new parent `f'` instead of `f`, and similarly for all their descendants, and the descendants of all the other nodes I am redefining... including the root. That is, since all the nodes are interconnected, I have to redefine every single node in the tree!
