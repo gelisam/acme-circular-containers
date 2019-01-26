@@ -1,4 +1,5 @@
 resolver: lts-13.3
 packages:
 - .
-# extra-deps: []
+extra-deps:
+- graph-wrapper-0.2.6.0

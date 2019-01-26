@@ -2,9 +2,7 @@
 module Data.Graph.Wrapper.Circular (Graph(..), Vertex(..), freeze, thaw) where
 
 import Data.Function (on)
-import Data.List (sortBy)
 import Data.Map (Map, (!))
-import Data.Ord (comparing)
 import qualified Data.Graph.Wrapper as Wrapper
 import qualified Data.Map as Map
 
@@ -32,20 +30,8 @@ data Vertex i v = Vertex
   }
 
 
-fst3 :: (a, b, c) -> a
-fst3 (x, _, _) = x
-
-toSortedList :: Ord i
-             => Wrapper.Graph i v -> [(i, v, [i])]
-toSortedList = sortBy (comparing fst3) . Wrapper.toList
-
--- "Data.Graph.Wrapper" doesn't have an 'Eq' instance for some reason
-eqGraphWrapper :: (Ord i, Eq v)
-               => Wrapper.Graph i v -> Wrapper.Graph i v -> Bool
-eqGraphWrapper = (==) `on` toSortedList
-
 instance (Ord i, Eq v) => Eq (Graph i v) where
-  (==) = eqGraphWrapper `on` thaw
+  (==) = (==) `on` thaw
 
 
 -- $
@@ -85,7 +71,7 @@ freeze g = Graph vertices
     lookupVertex i = (i, vertices ! i)
 
 -- $
--- >>> thaw (freeze g) `eqGraphWrapper` g
+-- >>> thaw (freeze g) == g
 -- True
 -- >>> freeze (thaw g') == g'
 -- True
