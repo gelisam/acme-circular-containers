@@ -1,4 +1,4 @@
-# acme-circular-containers
+# acme-circular-containers [![Hackage](https://img.shields.io/hackage/v/acme-circular-containers.svg)](https://hackage.haskell.org/package/acme-circular-containers)
 
 Most immutable data structures have a spine, meaning that when you modify an element, only the nodes on the path from the root to the modified element need to be reallocated (see the Example section below for details). The data structures in this library are spineless, so all the nodes need to be reallocated.
 
